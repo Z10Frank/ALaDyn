@@ -1,0 +1,17 @@
+#!/bin/bash
+module purge
+module load cmake
+module load compilers/icc/17.3.191 mpi/openmpi/1.6.5-ib-icc hdf5/1.8.19-icc-omp1.6.5 python/2.7.10 compilers/gcc/4.9.2
+export CC=/opt/exp_soft/vo.llr.in2p3.fr/intel/v17/compilers_and_libraries_2017.3.191/linux/bin/intel64/icc
+export CXX=/opt/exp_soft/vo.llr.in2p3.fr/intel/v17/compilers_and_libraries_2017.3.191/linux/bin/intel64/icpc
+export FC=/opt/exp_soft/vo.llr.in2p3.fr/intel/v17/compilers_and_libraries_2017.3.191/linux/bin/intel64/ifort
+export MKLDIR=/opt/exp_soft/vo.llr.in2p3.fr/intel/v17/compilers_and_libraries_2017.3.191/linux/mkl/lib/intel64/
+export MKLINCLUDE=/opt/exp_soft/vo.llr.in2p3.fr/intel/v17/compilers_and_libraries_2017.3.191/linux/mkl/include/
+export FTTINCLUDE=$MKLINCLUDE/fftw/
+#cmake .. -DFFTW_ROOT_DIR=/opt/exp_soft/vo.llr.in2p3.fr/fftw-3.3.4-openmpi-1.6.5-intel-13/ -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_Fortran_COMPILER=$FC -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX
+
+cmake .. -DCMAKE_Fortran_FLAGS=-B$FTTINCLUDE  -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_Fortran_COMPILER=$FC -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DMKL_INCLUDE_DIR=$MKLDIR -DINCLUDE_DIRECTORIES=$MKLINCLUDE:$FTTINCLUDE
+
+#cmake --build . --target install
+CPATH=/opt/exp_soft/vo.llr.in2p3.fr/intel/v17/compilers_and_libraries_2017.3.191/linux/mkl/include/fftw/ make
+make install
